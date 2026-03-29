@@ -2,29 +2,34 @@
 
 #include <iostream>
 #include <string>
+using namespace std;
 
 int main() {
-    std::cout << "=============================\n";
-    std::cout << "  Homework Workspace Launcher\n";
-    std::cout << "=============================\n";
-    std::cout << "Available tasks:\n";
-    std::cout << "  Task1  - Sum of integers\n";
-    std::cout << "  Task2  - Shape polymorphism\n";
-    std::cout << "  Task3  - JSON parsing\n";
-    std::cout << "-----------------------------\n";
-    std::cout << "Enter task name (or 'q' to quit): ";
+    Launcher launcher;
+    cout << "=============================\n";
+    cout << "  С++ Workspace Launcher\n";
+    cout << "=============================\n";
+    while (true) {
+        cout << "Available tasks:\n";
+        cout << "-----------------------------\n";
+        for (const auto& projectName : launcher.getProjectNames()) {
+            cout << projectName << "\n";
+        }
+        cout << "-----------------------------\n";
+        cout << "Enter task name (or 'q' to quit): ";
 
-    std::string taskName;
-    std::getline(std::cin, taskName);
-    if (!taskName.empty() && taskName.back() == '\r') {
-        taskName.pop_back();
+        string taskName;
+        getline(cin, taskName);
+        if (!taskName.empty() && taskName.back() == '\r') {
+            taskName.pop_back();
+        }
+
+        if (taskName == "q" || taskName == "Q") {
+            cout << "Goodbye.\n";
+            return 0;
+        }
+
+        string args;
+        return launcher.run(taskName, args);
     }
-
-    if (taskName == "q" || taskName == "Q") {
-        std::cout << "Goodbye.\n";
-        return 0;
-    }
-
-    Launcher launcher(taskName);
-    return launcher.run();
 }

@@ -1,3 +1,5 @@
+using namespace std;
+
 #include "Launcher.h"
 
 #include <cctype>
@@ -5,74 +7,35 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <filesystem>
 
-#if defined(_WIN32) || defined(__CYGWIN__)
-static constexpr const char* EXE_EXT = ".exe";
-#else
-static constexpr const char* EXE_EXT = "";
-#endif
-
-#ifdef __CYGWIN__
-static std::string toNativePath(const std::string& path) {
-    if (path.size() >= 2 && path[1] == ':') {
-        char drive = static_cast<char>(std::tolower(static_cast<unsigned char>(path[0])));
-        return "/cygdrive/" + std::string(1, drive) + path.substr(2);
-    }
-    return path;
-}
-#else
-static std::string toNativePath(const std::string& path) { return path; }
-#endif
-
-Launcher::Launcher(const std::string& taskName)
-    : taskName_(taskName) {}
-
-std::string Launcher::buildExecutablePath() const {
-    std::string base = toNativePath(PROJECT_BINARY_DIR);
-    return base + "/tasks/" + taskName_ + "/" + BUILD_TYPE + "/" + taskName_ + EXE_EXT;
+Launcher::Launcher() {
+    projects_ = loadProjects();
 }
 
-std::string Launcher::readInputFile() const {
-    std::string base = toNativePath(PROJECT_SOURCE_DIR);
-    std::string path = base + "/tasks/" + taskName_ + "/in.txt";
-
-    std::ifstream ifs(path);
-    if (!ifs.is_open()) {
-        std::cerr << "Warning: could not open " << path << "\n";
-        return {};
-    }
-
-    std::ostringstream content;
-    content << ifs.rdbuf();
-    return stripNewlines(content.str());
+int Launcher::run(const string& projectName, string& args) const {
+    return projects_.at(projectName).run(args);
 }
-
-std::string Launcher::stripNewlines(const std::string& text) {
-    std::string result;
-    result.reserve(text.size());
-    for (char ch : text) {
-        if (ch != '\n' && ch != '\r') {
-            result += ch;
+map<string, Project> Launcher::loadProjects() const {
+    map<string, Project> projects;
+    string base = string(PROJECT_SOURCE_DIR);
+    string path = base + "/tasks";
+    for (const auto& entry : filesystem::directory_iterator(path)) {
+        if (entry.is_directory()) {
+            string projectName = entry.path().filename().string();
+            Project project;
+            if (project.init(projectName)) {
+                projects[projectName] = project;
+            }
         }
     }
-    return result;
+    return projects;
 }
 
-int Launcher::run() const {
-    std::string exePath = buildExecutablePath();
-    std::string args = readInputFile();
-    std::cout << "PROJECT_BINARY_DIR" << PROJECT_BINARY_DIR << "\n";
-    std::string command = exePath;
-    if (!args.empty()) {
-        command += " " + args;
+vector<string> Launcher::getProjectNames() const {
+    vector<string> projectNames;
+    for (const auto& project : projects_) {
+        projectNames.push_back(project.first);
     }
-
-    std::cout << "Executing: " << command << "\n\n";
-
-    int exitCode = std::system(command.c_str());
-    if (exitCode != 0) {
-        std::cerr << "\nTask " << taskName_
-                  << " exited with code " << exitCode << "\n";
-    }
-    return exitCode;
+    return projectNames;
 }
