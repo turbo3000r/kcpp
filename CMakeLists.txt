@@ -13,6 +13,9 @@ target_compile_definitions(LauncherMain PRIVATE
     BUILD_TYPE="$<CONFIG>"
 )
 
-add_subdirectory(tasks/Task1)
-add_subdirectory(tasks/Task2)
-add_subdirectory(tasks/Task3)
+file(GLOB TASK_DIRS RELATIVE ${CMAKE_SOURCE_DIR} tasks/*)
+foreach(TASK_DIR ${TASK_DIRS})
+    if(IS_DIRECTORY "${CMAKE_SOURCE_DIR}/${TASK_DIR}")
+        add_subdirectory(${TASK_DIR})
+    endif()
+endforeach()

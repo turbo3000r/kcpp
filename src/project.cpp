@@ -41,9 +41,8 @@ int Project::run(string& args) const {
     }
     string command = executablePath_ + " " + args;
     cout << "Executing: " << command << "\n\n";
+    cout << PROMPT;
     int exitCode = system(command.c_str());
-    if (exitCode != 0) {
-        cerr << "\nTask " << name_ << " exited with code " << exitCode << "\n";
-    }
+    cout << PROMPT_END;
     return exitCode;
 }

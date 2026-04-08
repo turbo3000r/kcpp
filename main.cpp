@@ -4,6 +4,8 @@
 #include <string>
 using namespace std;
 
+
+
 int main() {
     Launcher launcher;
     cout << "=============================\n";
@@ -29,7 +31,17 @@ int main() {
             return 0;
         }
 
+        cout << "Enter arguments (Enter to skip): ";
         string args;
-        return launcher.run(taskName, args);
+        getline(cin, args);
+        if (!args.empty() && args.back() == '\r') {
+            args.pop_back();
+        }
+        int exitCode = launcher.run(taskName, args);
+        if (exitCode != 0) {
+            cerr << "Task '" << taskName << "' exited with code " << exitCode << endl;
+        } else {
+            cout << "Task '" << taskName << "' completed successfully" << endl;
+        }
     }
 }

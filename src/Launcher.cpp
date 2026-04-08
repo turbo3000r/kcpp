@@ -14,6 +14,10 @@ Launcher::Launcher() {
 }
 
 int Launcher::run(const string& projectName, string& args) const {
+    if (projects_.find(projectName) == projects_.end()) {
+        cerr << "Project " << projectName << " not found" << endl;
+        return 1;
+    }
     return projects_.at(projectName).run(args);
 }
 map<string, Project> Launcher::loadProjects() const {

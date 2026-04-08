@@ -21,6 +21,8 @@ private:
 };
 
 
+static constexpr const char* PROMPT = "===============================================\n";
+static constexpr const char* PROMPT_END = "===============================================\n";
 
 #if !defined(PROJECT_BINARY_DIR) || !defined(PROJECT_SOURCE_DIR)
 #error PROJECT_BINARY_DIR and PROJECT_SOURCE_DIR must be defined
