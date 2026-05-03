@@ -2,8 +2,8 @@
 
 #include <iostream>
 #include <string>
+#include "utils.h"
 using namespace std;
-
 
 
 int main() {
@@ -14,28 +14,28 @@ int main() {
     while (true) {
         cout << "Available tasks:\n";
         cout << "-----------------------------\n";
-        for (const auto& projectName : launcher.getProjectNames()) {
-            cout << projectName << "\n";
+        for (int i = 0; i < launcher.getProjectNames().size(); i++) {
+            cout << i << " - " << launcher.getProjectNames()[i] << "\n";
         }
         cout << "-----------------------------\n";
-        cout << "Enter task name (or 'q' to quit): ";
+        cout << "Enter task index (or -1 to quit): ";
 
-        string taskName;
-        getline(cin, taskName);
-        if (!taskName.empty() && taskName.back() == '\r') {
-            taskName.pop_back();
-        }
-
-        if (taskName == "q" || taskName == "Q") {
+        int taskIndex;
+        string args;
+        proceedTaskLine(taskIndex, args);
+        printf("taskIndex: %d\n", taskIndex);
+        if (taskIndex == -1) {
             cout << "Goodbye.\n";
             return 0;
         }
+        string taskName = launcher.getProjectNames()[taskIndex];
 
+        if (args.empty()) {
         cout << "Enter arguments (Enter to skip): ";
-        string args;
         getline(cin, args);
-        if (!args.empty() && args.back() == '\r') {
-            args.pop_back();
+            if (!args.empty() && args.back() == '\r') {
+                args.pop_back();
+            }
         }
         int exitCode = launcher.run(taskName, args);
         if (exitCode != 0) {
