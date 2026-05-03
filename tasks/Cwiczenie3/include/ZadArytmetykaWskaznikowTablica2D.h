@@ -1,0 +1,9 @@
+#ifndef ZADARYTMETYKAWSKAZNIKOWTABLICA2D_H
+#define ZADARYTMETYKAWSKAZNIKOWTABLICA2D_H
+
+class ZadArytmetykaWskaznikowTablica2D {
+    public:
+        int main();
+};
+
+#endif // ZADARYTMETYKAWSKAZNIKOWTABLICA2D_H
