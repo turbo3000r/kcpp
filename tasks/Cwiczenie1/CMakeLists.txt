@@ -7,8 +7,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(Cwiczenie1
     main.cpp
     src/ZadEnumExample.cc
-    src/ZadMainExample.cc
     src/ZadClassExample.cc
+    src/ZadCharExample.cc
     src/ZadStringExample.cc
+    src/ZadMainExample.cc
 )
 target_include_directories(Cwiczenie1 PRIVATE include)
